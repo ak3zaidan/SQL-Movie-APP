@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Site - Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 1rem;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+        }
+
+        #searchForm {
+            margin-bottom: 1rem;
+        }
+
+        #searchForm input[type="text"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #searchForm button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #searchForm button:hover {
+            background-color: #0056b3;
+        }
+
+        #movieListTable {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #movieListTable th,
+        #movieListTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #movieListTable th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Movie Site</h1>
+        <nav>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="allLists.html" class="active">All Lists</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Search Movie Lists</h2>
+        <form id="searchForm">
+            <input type="text" id="searchQuery" placeholder="Enter search query">
+            <button type="submit">Search</button>
+        </form>
+
+        <table id="movieListTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Array of Movies</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically populated -->
+            </tbody>
+        </table>
+    </main>
+
+    <script src="search.js"></script>
+</body>
+</html>

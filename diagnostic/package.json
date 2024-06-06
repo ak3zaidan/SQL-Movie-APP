@@ -13,6 +13,10 @@
     "express": "^4.13.2",
     "express-handlebars": "^2.0.1",
     "express-session": "^1.11.3",
+    "forever": "^4.0.3",
     "mysql": "^2.8.0"
+  },
+  "overrides": {
+    "graceful-fs": "^4.2.11"
   }
 }

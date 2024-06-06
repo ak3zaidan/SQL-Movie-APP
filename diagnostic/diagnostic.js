@@ -1,49 +1,116 @@
 var express = require('express');
 var mysql = require('./dbcon.js');
-
+var path = require('path');
+var fs = require('fs');
 var app = express();
-var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
-app.set('port', process.argv[2]);
+app.use(express.static('public'));
+app.use(express.json());
 
-app.get('/',function(req,res,next){
-  var context = {};
-  var createString = "CREATE TABLE diagnostic(" +
-  "id INT PRIMARY KEY AUTO_INCREMENT," +
-  "text VARCHAR(255) NOT NULL)";
-  mysql.pool.query('DROP TABLE IF EXISTS diagnostic', function(err){
-    if(err){
-      next(err);
-      return;
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+app.post('/get-user-data', function(req, res) {
+  //to-do
+});
+
+app.post('/update-movie-list', function(req, res) {
+  //to-do
+});
+
+app.post('/delete-movie-list', function(req, res) {
+  //to-do
+});
+
+app.post('/get-all-lists', function(req, res) {
+  //to-do
+});
+
+app.post('/search', function(req, res) {
+  //to-do
+});
+
+app.post('/rate', function(req, res) {
+  //to-do
+});
+
+app.post('/get-ratings', function(req, res) {
+  //to-do
+});
+
+app.post('/login', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  if (!username || !password) {
+    return res.status(400).send({ success: false, message: 'Username and password are required' });
+  }
+
+  mysql.pool.query('SELECT password FROM users WHERE username = ?', [username], function(err, results) {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).send({ success: false, message: 'Internal server error' });
     }
-    mysql.pool.query(createString, function(err){
-      if(err){
-        next(err);
-		return;
-      }
-	  mysql.pool.query('INSERT INTO diagnostic (`text`) VALUES ("MySQL is Working!")',function(err){
-	    mysql.pool.query('SELECT * FROM diagnostic', function(err, rows, fields){
-		  context.results = JSON.stringify(rows);
-		  res.render('home',context);
-		});
-	  });
-    });
+
+    if (results.length === 0) {
+      return res.status(404).send({ success: false, message: 'User not found' });
+    }
+
+    var storedPassword = results[0].password;
+
+    if (storedPassword === password) {
+      return res.send({ success: true });
+    } else {
+      return res.send({ success: false, message: 'Incorrect password' });
+    }
   });
 });
 
-app.use(function(req,res){
-  res.status(404);
-  res.render('404');
+app.post('/create-account', function(req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const uid = Math.floor(Math.random() * 1000000);
+
+  mysql.pool.query('INSERT INTO users (uid, username, password) VALUES (?, ?, ?)', [uid, username, password], function(err, result) {
+    if (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        res.json({ success: false, message: 'Username already exists' });
+      } else {
+        console.error("Error creating user:", err);
+        res.json({ success: false, message: "Server error" });
+      }
+    } else {
+      res.json({ success: true, uid: uid });
+    }
+  });
 });
 
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  res.status(500);
-  res.render('500');
-});
+app.set('port', process.argv[2]);
+
+function createTables() {
+  const sqlPath = path.join(__dirname, 'makeTables.sql');
+  fs.readFile(sqlPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading SQL file:', err);
+      return;
+    }
+
+    const queries = data.split(';');
+
+    queries.forEach(query => {
+      if (query.trim()) { // Avoid empty queries
+        mysql.pool.query(query, (err) => {
+          if (err) {
+            console.error('Error executing query:', err);
+          }
+        });
+      }
+    });
+  });
+}
 
 app.listen(app.get('port'), function(){
+  createTables();
   console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
 });
