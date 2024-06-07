@@ -11,6 +11,10 @@ function initSearchForm() {
     document.getElementById('searchForm').addEventListener('submit', handleSearch);
 }
 
+document.getElementById('goBackButton').addEventListener('click', function() {
+    window.history.back();
+});
+
 window.onload = function() {
     initSearchForm();
 };

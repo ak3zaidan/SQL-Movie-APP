@@ -55,3 +55,81 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+#newMovieListForm {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#newMovieListForm h3 {
+    margin-top: 0;
+}
+
+#newMovieListForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#newMovieListForm input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#newMovieListForm button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#newMovieListForm button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#editMovieListForm {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#editMovieListForm h3 {
+    margin-top: 0;
+}
+
+#editMovieListForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#editMovieListForm input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#editMovieListForm button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#editMovieListForm button[type="submit"]:hover {
+    background-color: #45a049;
+}

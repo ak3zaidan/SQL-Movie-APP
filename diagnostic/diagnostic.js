@@ -12,15 +12,91 @@ app.get('/', function(req, res){
 });
 
 app.post('/get-user-data', function(req, res) {
-  //to-do
+  const userId = req.body.uid;
+
+  if (!userId) {
+      return res.status(400).send({ success: false, message: 'User ID is required' });
+  }
+
+  const query = 'SELECT list_id, uid, movielist_name, created_at, movie_names FROM movielists WHERE uid = ?';
+
+  mysql.pool.query(query, [userId], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      if (results.length === 0) {
+          return res.status(404).send({ success: false, message: 'No movie lists found for this user' });
+      }
+
+      res.send({ success: true, movieLists: results });
+  });
 });
 
 app.post('/update-movie-list', function(req, res) {
-  //to-do
+  const { listId, listName, movies, uid } = req.body;
+
+  if (!listId || !listName || !movies || !uid) {
+      return res.status(400).send({ success: false, message: 'List ID, name, movies, and user ID are required' });
+  }
+
+  const query = 'UPDATE movielists SET movielist_name = ?, movie_names = ? WHERE list_id = ? AND uid = ?';
+
+  mysql.pool.query(query, [listName, JSON.stringify(movies), listId, uid], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      if (results.affectedRows === 0) {
+          return res.status(404).send({ success: false, message: 'Movie list not found or you do not have permission to update it' });
+      }
+
+      res.send({ success: true, message: 'Movie list updated successfully' });
+  });
+});
+
+app.post('/create-movie-list', function(req, res) {
+  const { listName, movies, uid } = req.body;
+
+  if (!listName || !movies || !uid) {
+      return res.status(400).send({ success: false, message: 'List name, movies, and user ID are required' });
+  }
+
+  const query = 'INSERT INTO movielists (uid, movielist_name, movie_names) VALUES (?, ?, ?)';
+  
+  mysql.pool.query(query, [uid, listName, JSON.stringify(movies)], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      res.send({ success: true, message: 'Movie list created successfully' });
+  });
 });
 
 app.post('/delete-movie-list', function(req, res) {
-  //to-do
+  const { movielist_name, uid } = req.body;
+
+  if (!movielist_name || !uid) {
+      return res.status(400).send({ success: false, message: 'Movie list name and user ID are required' });
+  }
+
+  const query = 'DELETE FROM movielists WHERE movielist_name = ? AND uid = ?';
+
+  mysql.pool.query(query, [movielist_name, uid], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      if (results.affectedRows === 0) {
+          return res.status(404).send({ success: false, message: 'Movie list not found' });
+      }
+
+      res.send({ success: true, message: 'Movie list deleted successfully' });
+  });
 });
 
 app.post('/get-all-lists', function(req, res) {
@@ -40,14 +116,14 @@ app.post('/get-ratings', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-  var username = req.body.username;
-  var password = req.body.password;
+  const username = req.body.username;
+  const password = req.body.password;
 
   if (!username || !password) {
     return res.status(400).send({ success: false, message: 'Username and password are required' });
   }
 
-  mysql.pool.query('SELECT password FROM users WHERE username = ?', [username], function(err, results) {
+  mysql.pool.query('SELECT uid, password FROM users WHERE username = ?', [username], function(err, results) {
     if (err) {
       console.error('Database query error:', err);
       return res.status(500).send({ success: false, message: 'Internal server error' });
@@ -57,10 +133,11 @@ app.post('/login', function(req, res) {
       return res.status(404).send({ success: false, message: 'User not found' });
     }
 
-    var storedPassword = results[0].password;
+    const storedPassword = results[0].password;
+    const uid = results[0].uid;
 
     if (storedPassword === password) {
-      return res.send({ success: true });
+      return res.send({ success: true, uid: uid });
     } else {
       return res.send({ success: false, message: 'Incorrect password' });
     }

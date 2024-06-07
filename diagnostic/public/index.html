@@ -41,14 +41,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.currentUserUsername = username
-                    window.location.href = 'main.html';
+                    const userId = data.uid;
+                    const url = `main.html?userId=${userId}`;
+                    window.location.href = url;
                 } else {
                     alert('Login failed: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
             });
         });
 

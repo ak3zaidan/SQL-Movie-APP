@@ -51,6 +51,10 @@ function deleteMovieList(name) {
     console.log('Deleting movie list:', name);
 }
 
+document.getElementById('goBackButton').addEventListener('click', function() {
+    window.history.back();
+});
+
 window.onload = function() {
     populateMovieListTable();
 };

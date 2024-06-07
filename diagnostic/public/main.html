@@ -14,6 +14,7 @@
                 <li><a href="allLists.html">All Lists</a></li>
                 <li><a href="search.html">Search</a></li>
                 <li><button id="logoutButton">Logout</button></li>
+                <li><button id="newList">New Movie List</button></li>
             </ul>
         </nav>
     </header>
@@ -33,6 +34,30 @@
                 <!-- Table rows will be dynamically populated -->
             </tbody>
         </table>
+
+        <!-- New Movie List Form -->
+        <div id="newMovieListForm" style="display: none;">
+            <h3>Add New Movie List</h3>
+            <form id="movieListForm">
+                <label for="listName">Movie List Name:</label>
+                <input type="text" id="listName" name="listName" required><br>
+                <label for="movies">Movies (separated by commas):</label>
+                <input type="text" id="movies" name="movies" required><br>
+                <button type="submit" id="createListBtn">Create</button>
+            </form>
+        </div>
+
+        <!-- Edit Movie List Form -->
+        <div id="editMovieListForm" style="display: none;">
+            <h3>Edit Movie List</h3>
+            <form id="editListForm">
+                <label for="editListName">Movie List Name:</label>
+                <input type="text" id="editListName" name="editListName" required><br>
+                <label for="editMovies">Movies (separated by commas):</label>
+                <input type="text" id="editMovies" name="editMovies" required><br>
+                <button type="submit" id="updateListBtn">Update</button>
+            </form>
+        </div>
     </main>
 
     <script src="mainDriver.js"></script>
