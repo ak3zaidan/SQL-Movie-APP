@@ -101,10 +101,40 @@ app.post('/delete-movie-list', function(req, res) {
 
 app.post('/get-all-lists', function(req, res) {
   //to-do
+  const query = 'SELECT list_id, uid, movielist_name, created_at, movie_names FROM movielists';
+  mysql.pool.query(query, function(err, results) {
+    if (err) {
+        console.error('Database query error:', err);
+        return res.status(500).send({ success: false, message: 'Internal server error' });
+    }
+
+    res.send({ success: true, movieLists: results });
+  });
 });
 
+
 app.post('/search', function(req, res) {
-  //to-do
+  const searchQuery = req.body.query;
+
+  if (!searchQuery) {
+      return res.status(400).send({ success: false, message: 'Search query is required' });
+  }
+
+  const query = `
+    SELECT list_id, uid, movielist_name, created_at, movie_names 
+    FROM movielists 
+    WHERE movielist_name LIKE ? OR JSON_CONTAINS(movie_names, ?)
+  `;
+
+  const searchValue = `%${searchQuery}%`;
+  mysql.pool.query(query, [searchValue, `"${searchQuery}"`], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      res.send({ success: true, movieLists: results });
+  });
 });
 
 app.post('/rate', function(req, res) {
