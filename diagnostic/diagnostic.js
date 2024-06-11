@@ -12,7 +12,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/create-movies', function(req, res) {
-    const titles = req.body.titles;
+    const titles = req.body.movies;
 
     if (!titles || !Array.isArray(titles) || titles.length === 0) {
         return res.status(400).send({ success: false, message: 'Titles array is required' });
