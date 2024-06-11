@@ -219,6 +219,28 @@ function updateMovieList(listName, movies) {
 }
 
 function createMovieList(listName, movies) {
+        //upload the movie to the server
+    fetch('/create-movies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            movies: movies
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('movies uploaded !!');
+        } else {
+            console.error('fialed to upload movies', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('err', error);
+    });
+
     fetch('/create-movie-list', {
         method: 'POST',
         headers: {
