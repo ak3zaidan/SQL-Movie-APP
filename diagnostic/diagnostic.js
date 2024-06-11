@@ -11,6 +11,32 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.post('/create-movies', function(req, res) {
+    const titles = req.body.titles;
+
+    if (!titles || !Array.isArray(titles) || titles.length === 0) {
+        return res.status(400).send({ success: false, message: 'Titles array is required' });
+    }
+
+    const movies = titles.map(title => {
+        return [
+            title,
+            "Action",
+            120,
+            "Avengers"
+        ];
+    });
+
+    const query = 'INSERT INTO movies (title, genre, duration, series) VALUES ?';
+
+    mysql.pool.query(query, [movies], function(err, results) {
+        if (err) {
+            return res.status(500).send({ success: false, message: 'err' });
+        }
+        res.send({ success: true });
+    });
+});
+
 app.post('/get-user-data', function(req, res) {
   const userId = req.body.uid;
 
