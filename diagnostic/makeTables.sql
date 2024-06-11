@@ -31,10 +31,6 @@ CREATE TABLE movies (
 CREATE TABLE IF NOT EXISTS ratings (
     rating_id INT AUTO_INCREMENT PRIMARY KEY,
     list_id INT,
-    uid INT,
     rating TINYINT CHECK (rating >= 1 AND rating <= 5),
-    FOREIGN KEY (list_id) REFERENCES movielists(list_id),
-    FOREIGN KEY (uid) REFERENCES users(uid),
-    UNIQUE KEY unique_rating (list_id, uid)
+    FOREIGN KEY (list_id) REFERENCES movielists(list_id)
 );
-

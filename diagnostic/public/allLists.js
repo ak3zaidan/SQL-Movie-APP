@@ -22,29 +22,14 @@ function fetchRatings() {
     });
 }
 
+
 function submitRating(listId, rating) {
-    fetch('/login', {
+    return fetch('/rate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: 'your_username', password: 'your_password' }) // Provide your username and password here
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const uid = data.uid; // Get the uid from the response
-            return fetch('/rate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ listId: listId, rating: rating, uid: uid }) // Pass uid to the /rate endpoint
-            });
-        } else {
-            console.error('Login failed:', data.message);
-            // Handle login failure
-        }
+        body: JSON.stringify({ listId: listId, rating: rating })
     })
     .then(response => response.json())
     .then(data => {
@@ -70,7 +55,6 @@ function fetchAllMovieLists() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Fetched movie lists:', data);
         if (data.success) {
             return data.movieLists;
         } else {
@@ -125,11 +109,22 @@ function populateMovieListTable() {
     });
 }
 
+// function viewMovieList(name) {
+//     console.log('Viewing movie list:', name);
+// }
+
+// // function editMovieList(name) {
+// //     console.log('Editing movie list:', name);
+// // }
+
+// // function deleteMovieList(name) {
+// //     console.log('Deleting movie list:', name);
+// // }
+
 document.getElementById('goBackButton').addEventListener('click', function() {
     window.history.back();
 });
 
 window.onload = function() {
-    console.log('UID from localStorage:', uid);
     populateMovieListTable();
 };
