@@ -28,10 +28,13 @@ CREATE TABLE movies (
     series VARCHAR(255) 
 );
 
-CREATE TABLE ratings ( 
-    rating_id INT AUTO_INCREMENT PRIMARY KEY, 
-    list_id INT, 
-    review VARCHAR(100), 
-    rated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    FOREIGN KEY (list_id) REFERENCES movielists(list_id) ON DELETE CASCADE ON UPDATE CASCADE 
+CREATE TABLE IF NOT EXISTS ratings (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+    list_id INT,
+    uid INT,
+    rating TINYINT CHECK (rating >= 1 AND rating <= 5),
+    FOREIGN KEY (list_id) REFERENCES movielists(list_id),
+    FOREIGN KEY (uid) REFERENCES users(uid),
+    UNIQUE KEY unique_rating (list_id, uid)
 );
+

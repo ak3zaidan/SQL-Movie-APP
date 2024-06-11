@@ -100,7 +100,6 @@ app.post('/delete-movie-list', function(req, res) {
 });
 
 app.post('/get-all-lists', function(req, res) {
-  //to-do
   const query = 'SELECT list_id, uid, movielist_name, created_at, movie_names FROM movielists';
   mysql.pool.query(query, function(err, results) {
     if (err) {
@@ -138,11 +137,46 @@ app.post('/search', function(req, res) {
 });
 
 app.post('/rate', function(req, res) {
-  //to-do
+  const { listId, rating, uid } = req.body;
+
+  if (!listId || !rating || !uid) {
+      return res.status(400).send({ success: false, message: 'List ID, rating, and user ID are required' });
+  }
+
+  const queryCheck = 'SELECT * FROM ratings WHERE list_id = ? AND uid = ?';
+  mysql.pool.query(queryCheck, [listId, uid], function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      if (results.length > 0) {
+          return res.status(400).send({ success: false, message: 'User has already rated this list' });
+      }
+
+      const queryInsert = 'INSERT INTO ratings (list_id, rating, uid) VALUES (?, ?, ?)';
+      mysql.pool.query(queryInsert, [listId, rating, uid], function(err, results) {
+          if (err) {
+              console.error('Database query error:', err);
+              return res.status(500).send({ success: false, message: 'Internal server error' });
+          }
+
+          res.send({ success: true, message: 'Rating submitted successfully' });
+      });
+  });
 });
 
 app.post('/get-ratings', function(req, res) {
-  //to-do
+  const query = 'SELECT list_id, AVG(rating) as average_rating FROM ratings GROUP BY list_id';
+
+  mysql.pool.query(query, function(err, results) {
+      if (err) {
+          console.error('Database query error:', err);
+          return res.status(500).send({ success: false, message: 'Internal server error' });
+      }
+
+      res.send({ success: true, ratings: results });
+  });
 });
 
 app.post('/login', function(req, res) {
@@ -167,7 +201,7 @@ app.post('/login', function(req, res) {
     const uid = results[0].uid;
 
     if (storedPassword === password) {
-      return res.send({ success: true, uid: uid });
+      res.send({ success: true, uid: uid });
     } else {
       return res.send({ success: false, message: 'Incorrect password' });
     }
@@ -192,6 +226,7 @@ app.post('/create-account', function(req, res) {
     }
   });
 });
+
 
 app.set('port', process.argv[2]);
 
